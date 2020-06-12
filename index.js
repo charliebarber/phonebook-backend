@@ -1,6 +1,8 @@
 const express = require('express')
 const { response } = require('express')
+const bodyParser = require('body-parser')
 const app = express()
+app.use(bodyParser.json()) 
 
 let persons = [
     {
@@ -26,7 +28,6 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
-    console.log(persons)
     response.json(persons)
 })
 
@@ -53,9 +54,38 @@ app.get('/api/persons/:id', (req,res) => {
 app.delete('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)
     const person =  persons.find((person) => person.id === id)
-    res.send(`DELETE request for ${person.name}`)
+    res.json(person)
     persons = persons.filter((person) => person.id !== id)
 })
+
+app.post('/api/persons', (req,res) => {
+    const body = req.body
+    if (!body.name || !body.number) {
+        res.status(400).json({
+            error: 'Missing name or person'
+        })
+    }
+    if (persons.find((person) => person.name === body.name)) {
+        res.status(400).json({
+            error: 'Name already used'
+        })
+    } else {
+        const newPerson = {
+            name: body.name,
+            number: body.number,
+            id: generateId()
+        }
+        console.log(newPerson)
+        persons = persons.concat(newPerson)
+        res.json(persons)
+    }
+})
+
+const generateId = () => {
+    min = 5
+    max = 1000
+    return Math.floor(Math.random() * (max-min)) + min
+}
 
 const PORT = 3001
 app.listen(PORT, () => {
