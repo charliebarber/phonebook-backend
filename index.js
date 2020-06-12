@@ -3,6 +3,10 @@ const { response } = require('express')
 const bodyParser = require('body-parser')
 const app = express()
 app.use(bodyParser.json()) 
+const morgan = require('morgan')
+app.use(morgan(
+    ':method :url :status :res[content-length] :response-time ms :data'
+))
 
 let persons = [
     {
@@ -75,8 +79,8 @@ app.post('/api/persons', (req,res) => {
             number: body.number,
             id: generateId()
         }
-        console.log(newPerson)
         persons = persons.concat(newPerson)
+        morgan.token('data', (req, res) => JSON.stringify(req.body))
         res.json(persons)
     }
 })
@@ -91,3 +95,4 @@ const PORT = 3001
 app.listen(PORT, () => {
     console.log(`Sever running on ${PORT}`)
 })
+
