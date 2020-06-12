@@ -7,6 +7,8 @@ const morgan = require('morgan')
 app.use(morgan(
     ':method :url :status :res[content-length] :response-time ms :data'
 ))
+const cors = require('cors')
+app.use(cors())
 
 let persons = [
     {
@@ -64,6 +66,7 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req,res) => {
     const body = req.body
+    morgan.token('data', (req, res) => JSON.stringify(req.body))
     if (!body.name || !body.number) {
         res.status(400).json({
             error: 'Missing name or person'
@@ -80,7 +83,6 @@ app.post('/api/persons', (req,res) => {
             id: generateId()
         }
         persons = persons.concat(newPerson)
-        morgan.token('data', (req, res) => JSON.stringify(req.body))
         res.json(persons)
     }
 })
