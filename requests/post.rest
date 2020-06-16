@@ -1,4 +1,4 @@
-POST https://limitless-sierra-53934.herokuapp.com/api/persons
+POST http://localhost:3001/
 Content-Type: application/json
 
 {

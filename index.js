@@ -9,6 +9,9 @@ app.use(bodyParser.json())
 // ))
 const cors = require('cors')
 app.use(cors())
+app.use(express.static(
+    'build'
+))
 
 let persons = [
     {
@@ -82,10 +85,11 @@ app.post('/api/persons', (req,res) => {
             number: body.number,
             id: generateId()
         }
-        persons = persons.concat(newPerson)
-        res.json(persons)
+        persons.concat(newPerson)
+        res.json(newPerson)
     }
 })
+
 
 const generateId = () => {
     min = 5
