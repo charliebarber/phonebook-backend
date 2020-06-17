@@ -1,1 +1,3 @@
 node_modulesnode_modules
+.env
+mongo.js
